@@ -1,13 +1,16 @@
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Header
-from loguru import logger
 from aiogram import types
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from person import get_full_users
 from bot import bot, dp
 from config import WEBHOOK_PATH, WEBHOOK_SECRET
+
+logger = logging.getLogger(__name__)
+
 
 root_router = APIRouter(
     prefix="",
