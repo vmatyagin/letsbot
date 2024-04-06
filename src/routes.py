@@ -19,7 +19,7 @@ root_router = APIRouter(
 )
 
 
-@root_router.get("/")
+@root_router.get("/surfbot")
 async def root() -> dict:
     json_compatible_item_data = jsonable_encoder(get_full_users())
 
