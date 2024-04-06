@@ -32,31 +32,42 @@ class Person(Dict):
     id: int
     name: str
     username: str
-    tg_id: int
+    tg_id: Optional[int]
     location: Optional[Location]
     family_status: PersonStatus
     about: str
     is_admin: bool
 
 
-def get_user_by_id(id: int) -> Person | None:
+def get_user_by_id(id: int | None = None, username: str | None = None) -> Person | None:
+    raw_user = None
     cursor = db.get_cursor()
-    cursor.execute(f"SELECT * FROM person WHERE person.tg_id = {id}")
-    data = cursor.fetchall()
 
-    if not len(data):
-        return None
+    if id:
+        cursor.execute(f"SELECT * FROM person WHERE person.tg_id = {id}")
+        data = cursor.fetchall()
 
-    raw = data[0]
+        if len(data):
+            raw_user = data[0]
+
+    if not raw_user and username:
+        cursor.execute(f'SELECT * FROM person WHERE person.username = "{username}"')
+        data = cursor.fetchall()
+
+        if len(data):
+            raw_user = data[0]
+
+    if not raw_user:
+        return
 
     return {
-        "id": raw[0],
-        "name": raw[1],
-        "username": raw[2],
-        "tg_id": raw[3],
-        "family_status": raw[4],
-        "about": raw[5],
-        "is_admin": bool(raw[6]),
+        "id": raw_user[0],
+        "name": raw_user[1],
+        "username": raw_user[2],
+        "tg_id": raw_user[3],
+        "family_status": raw_user[4],
+        "about": raw_user[5],
+        "is_admin": bool(raw_user[6]),
     }
 
 
@@ -133,6 +144,18 @@ def insert_person(user: User, is_admin: bool = False):
         logger.error(f"Ошибка при записи в БД нового пользователя. {ex}")
 
 
+def insert_person_by_username(username: str):
+    cursor = db.get_cursor()
+
+    try:
+        cursor.execute(
+            f"INSERT INTO person(name, username) " f"VALUES " f"('', '{username}')"
+        )
+        db.connection.commit()
+    except Exception as ex:
+        logger.error(f"Ошибка при записи в БД нового пользователя. {ex}")
+
+
 def delete_user_locations(user_pk: int):
     cursor = db.get_cursor()
     try:
@@ -142,6 +165,17 @@ def delete_user_locations(user_pk: int):
 
     except Exception as ex:
         logger.error(f"Ошибка при удалении локации в БД. {ex}")
+
+
+def delete_person(user_pk: int):
+    cursor = db.get_cursor()
+    try:
+        cursor.execute(f"DELETE FROM person WHERE person.pk = {user_pk}")
+
+        db.connection.commit()
+
+    except Exception as ex:
+        logger.error(f"Ошибка при удалении person в БД. {ex}")
 
 
 def insert_location(user_pk: int, name: str, latitude: float, longitude: float):

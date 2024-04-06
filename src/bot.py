@@ -22,12 +22,14 @@ from filters import PrivateFilter
 from person import (
     Person,
     PersonStatusLangs,
+    get_user_by_id,
     update_person,
     insert_location,
     PersonStatus,
     get_user_locations,
     get_location_by_id,
     delete_location_by_id,
+    insert_person_by_username,
 )
 
 logger = logging.getLogger(__name__)
@@ -284,10 +286,40 @@ async def clear(message: Message, state: FSMContext):
     await message.answer("Очищено", reply_markup=ReplyKeyboardRemove())
 
 
+@dp.message(PrivateFilter(), Command(commands=["insert"]))
+async def insert_user(message: Message, state: FSMContext):
+    await state.clear()
+
+    if not message.text:
+        return
+
+    text = message.text.strip().replace("/insert", "")
+
+    sobaka_index = text.find("@")
+
+    if sobaka_index < 0:
+        return
+
+    username = text[sobaka_index + 1 :].strip()
+
+    user = get_user_by_id(id=None, username=username)
+
+    if not user:
+        if len(username.split(" ")) > 1:
+            await message.answer("Че то много слов")
+
+            return
+        insert_person_by_username(username)
+        await message.answer("Ок, юзер добавлен")
+    else:
+        await message.answer("Юзер уже существует")
+
+
 async def set_webhook(bot: Bot) -> None:
     # Check and set webhook for Telegram
     # await bot.delete_webhook(True)
     # await dp.start_polling(bot)
+
     async def check_webhook() -> WebhookInfo | None:
         try:
             webhook_info = await bot.get_webhook_info()

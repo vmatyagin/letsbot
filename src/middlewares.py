@@ -4,7 +4,7 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 
-from person import get_user_by_id, insert_person
+from person import get_user_by_id, insert_person, delete_person
 
 
 class AccessMiddleware(BaseMiddleware):
@@ -16,7 +16,10 @@ class AccessMiddleware(BaseMiddleware):
     ):
         if event.from_user.is_bot:
             return
-        person = get_user_by_id(int(event.from_user.id))
+
+        person = get_user_by_id(
+            int(event.from_user.id), username=event.from_user.username
+        )
 
         if not person:
             if event.from_user and event.from_user.username == "matyagin":
@@ -27,6 +30,11 @@ class AccessMiddleware(BaseMiddleware):
                     "Привет! Похоже, ты еще не серфер, но это легко исправить, пиши @aloaloaloaloe"
                 )
                 return
+
+        if not person["tg_id"]:
+            delete_person(person["tg_id"])
+            insert_person(event.from_user)
+            person = get_user_by_id(id=int(event.from_user.id))
 
         data["person"] = person
 

@@ -12,7 +12,7 @@ create table if not exists person(
     id integer primary key autoincrement,
     name varchar(255),
     username varchar(255),
-    tg_id integer(255),
+    tg_id integer(255) DEFAULT NULL,
     family_status varchar(255) DEFAULT 'unset',
     about varchar(255) DEFAULT '',
     is_admin integer(1) DEFAULT 0
