@@ -11,8 +11,6 @@ services:
         restart: always
         volumes:
             - .:/app:delegated
-        depends_on:
-            - redis
         env_file:
             - ./.env
     nginx:
