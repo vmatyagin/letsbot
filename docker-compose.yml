@@ -1,0 +1,25 @@
+version: "3.1"
+
+services:
+    app:
+        image: ghcr.io/vmatyagin/surf_bot:${GITHUB_SHA:-latest}
+        build:
+            dockerfile: Dockerfile
+            context: .
+        command: >
+            sh -c "python src/main.py"
+        restart: always
+        volumes:
+            - .:/app:delegated
+        depends_on:
+            - redis
+        env_file:
+            - ./.env
+    nginx:
+        build: ./nginx
+        ports:
+            - "8000:8000"
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+        depends_on:
+            - app

@@ -1,0 +1,22 @@
+
+# ide folders
+.idea/
+.vscode/
+
+# not project files
+__pycache__
+db.sqlite3
+.DS_Store
+
+.ruff_cache
+/venv
+./venv
+debug.log
+tasks.db
+celerybeat-schedule
+celerybeat-schedule.db
+.env
+
+surf.db
+users.json
+testing.session
