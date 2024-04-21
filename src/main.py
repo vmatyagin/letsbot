@@ -26,4 +26,10 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(root_router)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, proxy_headers=True, log_level="info")
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8345,
+        proxy_headers=True,
+        log_level="info",
+    )

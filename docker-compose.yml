@@ -13,11 +13,3 @@ services:
             - .:/app:delegated
         env_file:
             - ./.env
-    nginx:
-        build: ./nginx
-        ports:
-            - "8345:8345"
-        volumes:
-            - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
-        depends_on:
-            - app

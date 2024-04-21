@@ -3,8 +3,8 @@
 from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import Message
-
-from person import get_user_by_id, insert_person, delete_person
+from person import get_user_by_id, insert_person
+from config import ADMIN_USERNAMES
 
 
 class AccessMiddleware(BaseMiddleware):
@@ -14,7 +14,7 @@ class AccessMiddleware(BaseMiddleware):
         event: Message,
         data,
     ):
-        if event.from_user.is_bot:
+        if not event.from_user or event.from_user.is_bot:
             return
 
         person = get_user_by_id(
@@ -22,20 +22,22 @@ class AccessMiddleware(BaseMiddleware):
         )
 
         if not person:
-            if event.from_user and event.from_user.username == "matyagin":
+            if event.from_user and event.from_user.username in ADMIN_USERNAMES:
                 insert_person(event.from_user, is_admin=True)
-                await event.answer("Привет. Добавил тебя в БД")
+                await event.answer("<i>Добавил тебя в БД</i>")
+                person = get_user_by_id(
+                    int(event.from_user.id), username=event.from_user.username
+                )
             else:
                 await event.answer(
                     "Привет! Похоже, ты еще не серфер, но это легко исправить, пиши @aloaloaloaloe"
                 )
                 return
 
-        if not person["tg_id"]:
-            delete_person(person["tg_id"])
-            insert_person(event.from_user)
-            person = get_user_by_id(id=int(event.from_user.id))
+        if not person:
+            return
 
         data["person"] = person
+        data["is_activated"] = person["is_activated"]
 
         return await handler(event, data)

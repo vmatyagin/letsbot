@@ -1,6 +1,6 @@
 import logging
 from typing import Dict, List, Optional
-from aiogram.types import User
+from aiogram.types import User, Contact
 import db
 from enum import Enum
 
@@ -10,13 +10,15 @@ logger = logging.getLogger(__name__)
 class PersonStatus(Enum):
     UNSET = "unset"
     ACTIVE = "active"
-    NOT_ACTIVE = "not_active"
+    MARRIED = "married"
+    RELATIONSHIP = "relationship"
 
 
 PersonStatusLangs: Dict[PersonStatus, str] = {
+    PersonStatus.MARRIED: "Женат / замужем",
+    PersonStatus.RELATIONSHIP: "В отношениях",
     PersonStatus.ACTIVE: "В активном поиске",
-    PersonStatus.NOT_ACTIVE: "Не в активном поиске",
-    PersonStatus.UNSET: "Не указан",
+    PersonStatus.UNSET: "Не хочу рассказывать",
 }
 
 
@@ -68,6 +70,7 @@ def get_user_by_id(id: int | None = None, username: str | None = None) -> Person
         "family_status": raw_user[4],
         "about": raw_user[5],
         "is_admin": bool(raw_user[6]),
+        "is_activated": bool(raw_user[7]),
     }
 
 
@@ -144,12 +147,18 @@ def insert_person(user: User, is_admin: bool = False):
         logger.error(f"Ошибка при записи в БД нового пользователя. {ex}")
 
 
-def insert_person_by_username(username: str):
+def insert_person_by_contact(user: Contact):
     cursor = db.get_cursor()
 
     try:
+        name = user.first_name
+        if user.last_name:
+            name += f" {user.last_name}"
+
         cursor.execute(
-            f"INSERT INTO person(name, username) " f"VALUES " f"('', '{username}')"
+            f"INSERT INTO person(name, tg_id) "
+            f"VALUES "
+            f"('{name}', '{user.user_id}')"
         )
         db.connection.commit()
     except Exception as ex:

@@ -15,5 +15,6 @@ create table if not exists person(
     tg_id integer(255) DEFAULT NULL,
     family_status varchar(255) DEFAULT 'unset',
     about varchar(255) DEFAULT '',
-    is_admin integer(1) DEFAULT 0
+    is_admin integer(1) DEFAULT 0,
+    is_activated integer(1) DEFAULT 0
 );
