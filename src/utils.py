@@ -61,15 +61,19 @@ change_me_markup = InlineKeyboardMarkup(
                 text="🏄 Имя",
                 callback_data=f"edit-me:name",
             ),
+        ],
+        [
             InlineKeyboardButton(
                 text="🖥 Информацию",
                 callback_data=f"edit-me:about",
             ),
+        ],
+        [
             InlineKeyboardButton(
-                text="♥️ Стаутс",
+                text="♥️ Статус",
                 callback_data=f"edit-me:status",
             ),
-        ]
+        ],
     ]
 )
 
