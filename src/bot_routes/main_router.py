@@ -1,10 +1,7 @@
 import logging
 from aiogram import F, Router
 from aiogram.filters import MagicData
-from aiogram.types import (
-    Message,
-    CallbackQuery,
-)
+from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.fsm.context import FSMContext
 
@@ -173,7 +170,10 @@ async def process_location(message: Message, person: Person, state: FSMContext) 
     )
 
     await state.clear()
-    await message.answer(f"Ок! Новая локация сохранена")
+    await message.answer(
+        f"Ок! Новая локация сохранена",
+        reply_markup=common_keyboard_markup,
+    )
 
 
 # КОЛБЭКИ НА КНОПКИ В ИЗМЕНЕНИИ ИНФОРМАЦИИ
@@ -202,10 +202,12 @@ async def handle_change_me(query: CallbackQuery, state: FSMContext):
     if id == "name":
         text = "Отправь мне новое имя."
         await state.set_state(States.wait_for_name)
+        markup = ReplyKeyboardRemove()
 
     if id == "about":
         text = "Напиши, чем ты занимаешься в рабочее и не очень время."
         await state.set_state(States.wait_for_about)
+        markup = ReplyKeyboardRemove()
 
     if id == "status":
         text = "Выбери свой текущий семейный статус."
@@ -215,6 +217,7 @@ async def handle_change_me(query: CallbackQuery, state: FSMContext):
     if id == "location":
         text = "Давай обзовем как-нибудь локацию? Пришли название"
         await state.set_state(States.wait_for_location_name)
+        markup = ReplyKeyboardRemove()
 
     await query.bot.send_message(
         query.from_user.id,
