@@ -239,10 +239,10 @@ def get_full_users():
                 "id": raw[0],
                 "name": raw[1],
                 "username": raw[2],
-                "tg_id": raw[3],
-                "family_status": raw[4],
+                # "tg_id": raw[3],
+                # "family_status": raw[4],
                 "about": raw[5],
-                "is_admin": bool(raw[6]),
+                # "is_admin": bool(raw[6]),
                 "location": locations.get(raw[0], []),
             }
         )
