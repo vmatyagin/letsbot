@@ -3,7 +3,7 @@
 from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import Message
-from person import get_user_by_id, insert_person
+from person import get_user_by_id, insert_person, update_person
 from config import ADMIN_USERNAMES
 
 
@@ -17,9 +17,8 @@ class AccessMiddleware(BaseMiddleware):
         if not event.from_user or event.from_user.is_bot:
             return
 
-        person = get_user_by_id(
-            int(event.from_user.id), username=event.from_user.username
-        )
+        # достаем только по id
+        person = get_user_by_id(int(event.from_user.id))
 
         if not person:
             if event.from_user and event.from_user.username in ADMIN_USERNAMES:
@@ -36,6 +35,20 @@ class AccessMiddleware(BaseMiddleware):
 
         if not person:
             return
+
+        tg_username = event.from_user.username
+
+        # Пользователь создан из контакта, обновим сами
+        if person["username"] != tg_username:
+            update_person(
+                id=person["id"], field="username", value=event.from_user.username
+            )
+        if person["name"] == "":
+            user = event.from_user
+            name = user.first_name
+            if user.last_name:
+                name += f" {user.last_name}"
+            update_person(id=person["id"], field="name", value=name)
 
         data["person"] = person
         data["is_activated"] = person["is_activated"]

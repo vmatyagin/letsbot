@@ -122,9 +122,9 @@ def delete_location_by_id(id: int) -> None:
         logger.error(f"Ошибка при удалении локации в БД. {ex}")
 
 
-def update_person(id: int, field: str, value: str) -> list | None:
+def update_person(id: int, field: str, value: str | None) -> list | None:
     cursor = db.get_cursor()
-    cursor.execute(f"UPDATE person " f'SET {field} = "{value}" ' f"WHERE id = {id}")
+    cursor.execute(f"UPDATE person SET {field} = ? WHERE id = ?", (value, id))
 
     db.connection.commit()
 
@@ -151,14 +151,8 @@ def insert_person_by_contact(user: Contact):
     cursor = db.get_cursor()
 
     try:
-        name = user.first_name
-        if user.last_name:
-            name += f" {user.last_name}"
-
         cursor.execute(
-            f"INSERT INTO person(name, tg_id) "
-            f"VALUES "
-            f"('{name}', '{user.user_id}')"
+            f"INSERT INTO person(name, tg_id) " f"VALUES " f"('', '{user.user_id}')"
         )
         db.connection.commit()
     except Exception as ex:
