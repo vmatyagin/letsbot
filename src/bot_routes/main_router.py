@@ -152,7 +152,9 @@ async def process_location_name(
     await state.set_data({"name": message.text})
     await state.set_state(States.wait_for_location)
 
-    await message.answer(f"Ок! Теперь пришли локацию")
+    await message.answer(
+        f"Выбери на карте точку, которую ты хочешь сделать своей локацией\n\n<i>Отправка местоположения может быть недоступна на десктоп устройствах</i>"
+    )
 
 
 @router.message(States.wait_for_location)
