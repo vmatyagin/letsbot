@@ -36,7 +36,7 @@ async def process_register_status(
     await state.clear()
 
     await message.answer(
-        f"✅ <b>Отлично, теперь ты на карте!</b> Можешь посмотреть, что получилось <a href='{MAP_URL}'>сразу на карте</a> или выбрать пункт «Обо мне» в меню.",
+        f"✅ <b>Отлично, теперь ты на карте!</b> Можешь посмотреть, что получилось <a href='{MAP_URL}'>сразу на карте</a>, или выбрать пункт «Обо мне» в меню.",
         link_preview_options=LinkPreviewOptions(
             is_disabled=True,
         ),

@@ -11,4 +11,5 @@ WEBHOOK_PATH = os.getenv("WEBHOOK_PATH", "/surfbot/webhook")
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
 BASE_WEBHOOK_URL = os.getenv("BASE_WEBHOOK_URL", "")
 ADMIN_USERNAMES = ["matyagin", "aloaloaloaloe"]
-MAP_URL = "https://letssurf.pro/page/map"
+MAP_URL = "https://vmatyagin.github.io/letssurf/"
+# MAP_URL = "https://letssurf.pro/page/map"

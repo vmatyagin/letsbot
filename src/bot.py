@@ -42,8 +42,9 @@ async def remove_me(message: Message, person: Person, state: FSMContext):
 
 async def set_webhook(bot: Bot) -> None:
     # Check and set webhook for Telegram
-    # await bot.delete_webhook(True)
-    # await dp.start_polling(bot)
+    await bot.delete_webhook(True)
+    await dp.start_polling(bot)
+    return
 
     async def check_webhook() -> WebhookInfo | None:
         try:

@@ -95,7 +95,7 @@ async def handle_location_click(query: CallbackQuery):
     if not location:
         return
 
-    location_name = location["name"] or "Без названия"
+    location_name = location["name"] or "📍"
 
     builder = InlineKeyboardBuilder()
 
@@ -273,11 +273,11 @@ async def get_locations(message: Message, person: Person, state: FSMContext):
 
     for location in user_locations:
         builder.button(
-            text=location["name"] or "Без названия",
+            text=location["name"] or "📍",
             callback_data=f"edit-location:{location['id']}",
         )
 
-    builder.adjust(3)
+    builder.adjust(1, 3)
 
     await message.answer("Твои локации:", reply_markup=builder.as_markup())
 
