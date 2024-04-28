@@ -10,6 +10,7 @@ from aiogram.fsm.context import FSMContext
 from middlewares import AccessMiddleware
 from filters import PrivateFilter
 from bot_routes import register_router, admin_router, main_router
+from person import Person, delete_person
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,13 @@ async def clear(message: Message, state: FSMContext):
     await state.clear()
 
     await message.answer("Очищено", reply_markup=ReplyKeyboardRemove())
+
+
+@dp.message(PrivateFilter(), Command(commands=["remove_me"]))
+async def remove_me(message: Message, person: Person, state: FSMContext):
+    await state.clear()
+    delete_person(user_pk=person["id"])
+    await message.answer("Прощай", reply_markup=ReplyKeyboardRemove())
 
 
 async def set_webhook(bot: Bot) -> None:
