@@ -5,6 +5,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import Message
 from person import get_user_by_id, insert_person, update_person
 from config import ADMIN_USERNAMES
+from aiogram.enums import ParseMode
 
 
 class AccessMiddleware(BaseMiddleware):
@@ -23,7 +24,10 @@ class AccessMiddleware(BaseMiddleware):
         if not person:
             if event.from_user and event.from_user.username in ADMIN_USERNAMES:
                 insert_person(event.from_user, is_admin=True)
-                await event.answer("<i>Добавил тебя в БД</i>")
+                await event.answer(
+                    "<i>Добавил тебя в БД</i>",
+                    parse_mode=ParseMode.HTML,
+                )
                 person = get_user_by_id(
                     int(event.from_user.id), username=event.from_user.username
                 )

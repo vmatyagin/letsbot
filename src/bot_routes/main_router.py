@@ -4,6 +4,7 @@ from aiogram.filters import MagicData
 from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.fsm.context import FSMContext
+from aiogram.enums import ParseMode
 
 from filters import PrivateFilter
 from person import (
@@ -150,7 +151,8 @@ async def process_location_name(
     await state.set_state(States.wait_for_location)
 
     await message.answer(
-        f"Выбери на карте точку, которую ты хочешь сделать своей локацией\n\n<i>Отправка местоположения может быть недоступна на десктоп устройствах</i>"
+        f"Выбери на карте точку, которую ты хочешь сделать своей локацией\n\n<i>Отправка местоположения может быть недоступна на десктоп устройствах</i>",
+        parse_mode=ParseMode.HTML,
     )
 
 

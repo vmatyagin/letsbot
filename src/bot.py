@@ -2,16 +2,10 @@
 
 import logging
 from aiogram import Bot, Dispatcher
-from aiogram.enums import ParseMode
-from config import (
-    BASE_WEBHOOK_URL,
-    TELEGRAM_BOT_TOKEN,
-    WEBHOOK_PATH,
-    WEBHOOK_SECRET,
-)
+from config import TELEGRAM_BOT_TOKEN
 from middlewares import AccessMiddleware
 from aiogram.filters import Command
-from aiogram.types import Message, ReplyKeyboardRemove, WebhookInfo
+from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 from middlewares import AccessMiddleware
 from filters import PrivateFilter
@@ -20,7 +14,7 @@ from bot_routes import register_router, admin_router, main_router
 logger = logging.getLogger(__name__)
 
 dp = Dispatcher()
-bot = Bot(TELEGRAM_BOT_TOKEN, parse_mode=ParseMode.HTML)
+bot = Bot(TELEGRAM_BOT_TOKEN)
 
 dp.message.outer_middleware(AccessMiddleware())
 
