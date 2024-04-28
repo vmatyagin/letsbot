@@ -52,7 +52,7 @@ async def process_register_about(
     if not message.text or message.text and len(message.text) < 1:
         return
 
-    update_person(id=person["id"], field="about", value=message.text)
+    update_person(id=person["id"], field="about", value=message.text[:250])
     await state.set_state(States.wait_for_status)
 
     await message.answer(

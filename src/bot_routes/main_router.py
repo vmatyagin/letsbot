@@ -41,7 +41,7 @@ async def process_name(message: Message, person: Person, state: FSMContext) -> N
         return
 
     await state.clear()
-    update_person(id=person["id"], field="name", value=message.text)
+    update_person(id=person["id"], field="name", value=message.text[:250])
     await message.answer(
         "Сохранено",
         reply_markup=common_keyboard_markup,
@@ -53,7 +53,7 @@ async def process_about(message: Message, person: Person, state: FSMContext) -> 
     if not message.text:
         return
     await state.clear()
-    update_person(id=person["id"], field="about", value=message.text)
+    update_person(id=person["id"], field="about", value=message.text[:250])
 
     await message.answer(
         "Сохранено",

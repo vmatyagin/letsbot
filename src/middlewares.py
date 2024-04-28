@@ -52,7 +52,7 @@ class AccessMiddleware(BaseMiddleware):
             name = user.first_name
             if user.last_name:
                 name += f" {user.last_name}"
-            update_person(id=person["id"], field="name", value=name)
+            update_person(id=person["id"], field="name", value=name[:250])
 
         data["person"] = person
         data["is_activated"] = person["is_activated"]
