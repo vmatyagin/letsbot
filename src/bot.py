@@ -2,10 +2,10 @@
 
 import logging
 from aiogram import Bot, Dispatcher
-from config import TELEGRAM_BOT_TOKEN
+from config import BASE_WEBHOOK_URL, TELEGRAM_BOT_TOKEN, WEBHOOK_PATH, WEBHOOK_SECRET
 from middlewares import AccessMiddleware
 from aiogram.filters import Command
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardRemove, WebhookInfo
 from aiogram.fsm.context import FSMContext
 from middlewares import AccessMiddleware
 from filters import PrivateFilter
