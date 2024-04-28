@@ -173,7 +173,7 @@ def delete_user_locations(user_pk: int):
 def delete_person(user_pk: int):
     cursor = db.get_cursor()
     try:
-        cursor.execute(f"DELETE FROM person WHERE person.pk = {user_pk}")
+        cursor.execute(f"DELETE FROM person WHERE person.id = {user_pk}")
 
         db.connection.commit()
 
