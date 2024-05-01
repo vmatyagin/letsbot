@@ -4,7 +4,7 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 from person import get_user_by_id, insert_person, update_person
-from config import ADMIN_USERNAMES
+from config import ADMIN_USERNAMES, LETSSURF_GROUP_ID
 from aiogram.enums import ParseMode
 
 
@@ -21,24 +21,23 @@ class AccessMiddleware(BaseMiddleware):
         # достаем только по id
         person = get_user_by_id(int(event.from_user.id))
 
-        if not person:
-            if event.from_user and event.from_user.username in ADMIN_USERNAMES:
-                insert_person(event.from_user, is_admin=True)
-                await event.answer(
-                    "<i>Добавил тебя в БД</i>",
-                    parse_mode=ParseMode.HTML,
+        if not person and event.bot and event.from_user:
+            try:
+                await event.bot.get_chat_member(
+                    chat_id=LETSSURF_GROUP_ID, user_id=event.from_user.id
                 )
-                person = get_user_by_id(
-                    int(event.from_user.id), username=event.from_user.username
+
+                insert_person(
+                    event.from_user,
+                    is_admin=event.from_user.username in ADMIN_USERNAMES,
                 )
-            else:
+
+                person = get_user_by_id(int(event.from_user.id))
+            except Exception:
                 await event.answer(
                     "Привет! Похоже, ты еще не серфер, но это легко исправить, пиши @aloaloaloaloe"
                 )
                 return
-
-        if not person:
-            return
 
         tg_username = event.from_user.username
 
