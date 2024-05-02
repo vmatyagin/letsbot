@@ -234,15 +234,15 @@ def get_full_users():
     users = list()
 
     for raw in raw_users:
+        status = PersonStatusLangs.get(PersonStatus(raw[4]))
+
         users.append(
             {
                 "id": raw[0],
                 "name": raw[1],
                 "username": raw[2],
-                # "tg_id": raw[3],
-                # "family_status": raw[4],
+                "family_status": status,
                 "about": raw[5],
-                # "is_admin": bool(raw[6]),
                 "location": locations.get(raw[0], []),
             }
         )
