@@ -5,7 +5,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import Message
 from person import get_user_by_id, insert_person, update_person
 from config import ADMIN_USERNAMES, LETSSURF_GROUP_ID
-from aiogram.enums import ParseMode
+from aiogram.enums import ChatMemberStatus
 
 
 class AccessMiddleware(BaseMiddleware):
@@ -23,9 +23,16 @@ class AccessMiddleware(BaseMiddleware):
 
         if not person and event.bot and event.from_user:
             try:
-                await event.bot.get_chat_member(
+                member_state = await event.bot.get_chat_member(
                     chat_id=LETSSURF_GROUP_ID, user_id=event.from_user.id
                 )
+
+                if member_state.status not in [
+                    ChatMemberStatus.MEMBER,
+                    ChatMemberStatus.CREATOR,
+                    ChatMemberStatus.ADMINISTRATOR,
+                ]:
+                    raise Exception()
 
                 insert_person(
                     event.from_user,
@@ -33,7 +40,7 @@ class AccessMiddleware(BaseMiddleware):
                 )
 
                 person = get_user_by_id(int(event.from_user.id))
-            except Exception:
+            except Exception as e:
                 await event.answer(
                     "Привет! Похоже, ты еще не серфер, но это легко исправить, пиши @aloaloaloaloe"
                 )
